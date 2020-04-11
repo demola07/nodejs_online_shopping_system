@@ -4,6 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 
+const db = require('./utils/database');
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
