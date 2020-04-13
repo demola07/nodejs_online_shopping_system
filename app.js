@@ -8,7 +8,7 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 const errorController = require('./controllers/error');
-const mongoConnect = require('./utils/database');
+const mongoConnect = require('./utils/database').mongoConnect;
 
 const adminRoutes = require('./routes/admin');
 // const shopRoutes = require('./routes/shop');
@@ -23,6 +23,7 @@ app.use((req, res, next) => {
   //     next();
   //   })
   //   .catch((err) => console.log(err));
+  next();
 });
 
 app.use('/admin', adminRoutes);
