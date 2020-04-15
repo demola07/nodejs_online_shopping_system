@@ -8,7 +8,7 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 const errorController = require('./controllers/error');
-const mongoConnect = require('./utils/database').mongoConnect;
+const mongoose = require('mongoose');
 const User = require('./models/user');
 
 const adminRoutes = require('./routes/admin');
@@ -18,9 +18,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findById('5e950398072ed912ccbf9067')
+  User.findById('5e96f4f63818a8203091a8d6')
     .then((user) => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
+      req.user = user;
       next();
     })
     .catch((err) => console.log(err));
@@ -31,8 +31,27 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoConnect(() => {
-  app.listen(3000, () => {
-    console.log('PORT RUNNING on 3000');
+mongoose
+  .connect(
+    'mongodb+srv://demola:demola@cluster0-yxizt.mongodb.net/shop?retryWrites=true&w=majority'
+  )
+  .then((result) => {
+    User.findOne().then((user) => {
+      if (!user) {
+        const user = new User({
+          name: 'john',
+          email: 'john@john.com',
+          cart: {
+            items: [],
+          },
+        });
+      }
+      user.save();
+    });
+    app.listen(3000, () => {
+      console.log('PORT RUNNING on 3000');
+    });
+  })
+  .catch((err) => {
+    console.log(err);
   });
-});
