@@ -18,12 +18,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findById('5e950398072ed912ccbf9067')
-    .then((user) => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
-      next();
-    })
-    .catch((err) => console.log(err));
+  // User.findById('5e950398072ed912ccbf9067')
+  //   .then((user) => {
+  //     req.user = new User(user.name, user.email, user.cart, user._id);
+  //     next();
+  //   })
+  //   .catch((err) => console.log(err));
 });
 
 app.use('/admin', adminRoutes);
@@ -33,7 +33,7 @@ app.use(errorController.get404);
 
 mongoose
   .connect(
-    'mongodb+srv://demola:demola@cluster0-yxizt.mongodb.net/test?retryWrites=true&w=majority'
+    'mongodb+srv://demola:demola@cluster0-yxizt.mongodb.net/shop?retryWrites=true&w=majority'
   )
   .then((result) => {
     app.listen(3000, () => {
