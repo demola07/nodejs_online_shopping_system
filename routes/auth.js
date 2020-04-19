@@ -13,8 +13,8 @@ router.get('/signup', authController.getSignup);
 router.post(
   '/login',
   [
-    check('email', 'Please enter a valid email').isEmail(),
-    body('password', 'Please enter a valid password').isLength({ min: 5 }),
+    check('email', 'Please enter a valid email').isEmail().normalizeEmail(),
+    body('password', 'Please enter a valid password').isLength({ min: 5 }).trim(),
   ],
   authController.postLogin
 );
@@ -30,14 +30,19 @@ router.post(
             return Promise.reject('Email already exists...Please pick a different email');
           }
         });
-      }),
-    body('password', 'Please enter a password with a least 5 characters').isLength({ min: 5 }),
-    body('confirmPassword').custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error('Passwords do not match');
-      }
-      return true;
-    }),
+      })
+      .normalizeEmail(),
+    body('password', 'Please enter a password with a least 5 characters')
+      .isLength({ min: 5 })
+      .trim(),
+    body('confirmPassword')
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error('Passwords do not match');
+        }
+        return true;
+      })
+      .trim(),
   ],
   authController.postSignup
 );
